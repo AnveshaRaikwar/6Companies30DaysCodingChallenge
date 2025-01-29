@@ -1,0 +1,37 @@
+class Solution { 
+  public:
+  
+    pair<string,int> solve(vector<int> &arr,vector<vector<pair<string,int>>> &dp, int i, int j){
+        if(i==j){
+            string s ="";
+            s += 'A'+i-1;
+            return {s,0};
+        }
+        if(dp[i][j].second!=-1) return dp[i][j];
+        
+        
+        int mini = INT_MAX;
+        string sr="";
+        for(int k=i; k<=j-1; k++){
+            auto left = solve(arr,dp,i,k);
+            auto right = solve(arr,dp,k+1,j);
+            
+            int step = left.second + right.second + arr[i-1]*arr[k]*arr[j];
+            
+            if(step<mini){
+                sr = '('+ left.first + right.first + ')';
+                mini = step;
+            }
+        }
+        
+        return dp[i][j] ={sr, mini};
+    }
+    string matrixChainOrder(vector<int> &arr) {
+        // code here
+        int n =arr.size();
+        int i=1, j=arr.size()-1;
+        vector<vector<pair<string,int>>> dp(n,vector<pair<string,int>>(n,{"",-1}));
+        auto ans = solve(arr,dp,i,j);
+        return ans.first;
+    }
+};
